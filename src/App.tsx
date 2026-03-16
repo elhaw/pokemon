@@ -1,10 +1,9 @@
 import './App.css'
-
+import { PokemonCard } from '@modules/pokemon/components/molecules'
 function App() {
-  
   return (
     <div>
-      Hello
+      <PokemonCard />
     </div>
   )
 }
