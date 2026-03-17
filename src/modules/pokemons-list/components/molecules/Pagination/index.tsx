@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+import { getPageNumbers } from '@/modules/pokemons-list/utils';
 type Props = {
   page: number;
   totalPages: number;
@@ -6,61 +8,39 @@ type Props = {
 };
 
 const Pagination = ({ page, totalPages, limit, onPageChange }: Props) => {
-  const getPageNumbers = (): (number | '...')[] => {
-    const pages: (number | '...')[] = [];
+  const navButtonClass = classNames(
+    'px-2 sm:px-4 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm font-medium',
+    'hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap'
+  );
 
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i);
-    }
+  const getPageButtonClass = (pageNumber: number) =>
+    classNames(
+      'w-8 h-8 sm:w-10 sm:h-10 rounded-lg border text-xs sm:text-sm font-medium transition-colors',
+      {
+        'bg-gray-900 text-white border-gray-900': page === pageNumber,
+        'border-gray-200 text-gray-700 hover:bg-gray-50': page !== pageNumber,
+      }
+    );
 
-    // ─── Always show 5 page numbers ───────────────────────────
-    let start = Math.max(0, page - 2);
-    let end = start + 4;
-
-    // adjust if end exceeds totalPages
-    if (end >= totalPages) {
-      end = totalPages - 1;
-      start = Math.max(0, end - 4);
-    }
-
-    // First page + left ellipsis
-    if (start > 0) {
-      pages.push(0);
-      if (start > 1) pages.push('...');
-    }
-
-    // Middle 5 pages
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-
-    // Right ellipsis + last page
-    if (end < totalPages - 1) {
-      if (end < totalPages - 2) pages.push('...');
-      pages.push(totalPages - 1);
-    }
-
-    return pages;
-  };
+  const pagesArray = getPageNumbers({ totalPages, page });
   return (
-    <div className="flex flex-col items-center gap-2 mt-8">
-      <div className="flex items-center gap-1">
+    <div className="flex flex-col items-center gap-2 mt-8 px-4 w-full">
+      <div className="flex items-center gap-1 flex-wrap justify-center">
         {/* Previous */}
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page === 0}
-          className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium 
-                     hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className={navButtonClass}
         >
-          &lt; Previous
+          &lt; <span className="hidden sm:inline">Previous</span>
         </button>
 
         {/* Page Numbers */}
-        {getPageNumbers().map((pageNumber, i) =>
+        {pagesArray.map((pageNumber, i) =>
           pageNumber === '...' ? (
             <span
               key={`ellipsis-${i}`}
-              className="px-3 py-2 text-gray-400 text-sm"
+              className="px-1 sm:px-3 py-2 text-gray-400 text-xs sm:text-sm"
             >
               ...
             </span>
@@ -68,11 +48,7 @@ const Pagination = ({ page, totalPages, limit, onPageChange }: Props) => {
             <button
               key={pageNumber}
               onClick={() => onPageChange(pageNumber)}
-              className={`w-10 h-10 rounded-lg border text-sm font-medium transition-colors ${
-                page === pageNumber
-                  ? 'bg-gray-900 text-white border-gray-900'
-                  : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-              }`}
+              className={getPageButtonClass(pageNumber)}
             >
               {pageNumber + 1}
             </button>
@@ -83,16 +59,16 @@ const Pagination = ({ page, totalPages, limit, onPageChange }: Props) => {
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page + 1 >= totalPages}
-          className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium 
-                     hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className={navButtonClass}
         >
-          Next &gt;
+          <span className="hidden sm:inline">Next</span> &gt;
         </button>
       </div>
 
       {/* Info */}
-      <p className="text-sm text-gray-500">
-        Page {page + 1} of {totalPages} ({limit} Pokemon shown)
+      <p className="text-xs sm:text-sm text-gray-500 text-center">
+        Page {page + 1} of {totalPages}{' '}
+        <span className="hidden sm:inline">({limit} Pokemon shown)</span>
       </p>
     </div>
   );
