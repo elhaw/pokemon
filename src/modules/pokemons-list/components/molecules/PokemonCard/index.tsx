@@ -20,7 +20,7 @@ const PokemonCard: React.FC<IPokemon> = ({ pokemon }) => {
       className="group bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col items-center gap-2 cursor-pointer"
     >
       {/* Image */}
-      <div className="w-full  p-4 bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center overflow-hidden">
+      <div className="w-full min-h-32  p-4 bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center overflow-hidden">
         <img src={src} alt={name} loading="lazy" className="object-contain" />
       </div>
 
