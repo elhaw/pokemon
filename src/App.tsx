@@ -1,11 +1,15 @@
-import './App.css'
-import { PokemonCard } from '@modules/pokemon/components/molecules'
+import './App.css';
+import { RouterProvider } from '@tanstack/react-router';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { router } from '@/router';
+import { queryClient } from '@/config/quyeryClient';
+
 function App() {
   return (
-    <div>
-      <PokemonCard />
-    </div>
-  )
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
-export default App
+export default App;
