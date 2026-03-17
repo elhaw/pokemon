@@ -50,16 +50,29 @@ interface PokemonHeaderProps {
   id: number;
 }
 
+interface InfoCardProps {
+  icon: string;
+  label: string;
+  value: string;
+}
+
+interface PokemonAvatarProps {
+  sprite: string;
+  name: string;
+}
+
+// --- Components ---
+
 const PokemonHeader = ({ name, id }: PokemonHeaderProps) => {
   return (
-    <div className="bg-linear-to-r from-purple-500 to-pink-500 py-8 flex flex-col items-center">
-      <h1 className="text-3xl font-bold text-white capitalize">⚡ {name}</h1>
+    <div className="bg-linear-to-r from-purple-500 to-pink-500 py-6 sm:py-8 flex flex-col items-center">
+      <h1 className="text-2xl sm:text-3xl font-bold text-white capitalize">
+        ⚡ {name}
+      </h1>
       <p className="text-purple-200 mt-1 text-sm">{formatId(id)}</p>
     </div>
   );
 };
-
-// --- Components ---
 
 const BaseStats = ({ stats, statNameMap }: BaseStatsProps) => {
   return (
@@ -108,11 +121,6 @@ const BaseExperience = ({ baseExperience }: BaseExperienceProps) => {
     </div>
   );
 };
-interface InfoCardProps {
-  icon: string;
-  label: string;
-  value: string;
-}
 
 const InfoCard = ({ icon, label, value }: InfoCardProps) => {
   return (
@@ -125,20 +133,20 @@ const InfoCard = ({ icon, label, value }: InfoCardProps) => {
   );
 };
 
-interface PokemonAvatarProps {
-  sprite: string;
-  name: string;
-}
-
 const PokemonAvatar = ({ sprite, name }: PokemonAvatarProps) => {
   return (
-    <div className="bg-gray-100 rounded-full w-56 h-56 flex items-center justify-center">
-      <img src={sprite} alt={name} className="w-48 h-48 object-contain" />
+    <div className="bg-gray-100 rounded-full w-40 h-40 sm:w-56 sm:h-56 flex items-center justify-center">
+      <img
+        src={sprite}
+        alt={name}
+        className="w-32 h-32 sm:w-48 sm:h-48 object-contain"
+      />
     </div>
   );
 };
 
 // ─── Main Page ────────────────────────────────────────────────
+
 const PokemonsDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
@@ -155,11 +163,10 @@ const PokemonsDetails = () => {
     );
 
   return (
-    <div className="min-h-screen bg-purple-50 p-8">
-      {/* Back Button */}
+    <div className="min-h-screen bg-purple-50 p-4 sm:p-6 lg:p-8">
       <button
         onClick={() => navigate({ to: '/' })}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm text-gray-600 hover:bg-gray-50 mb-6"
+        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm text-gray-600 hover:bg-gray-50 mb-4 sm:mb-6"
       >
         ← Back to List
       </button>
@@ -167,14 +174,16 @@ const PokemonsDetails = () => {
       {/* Card */}
       <div className="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-sm">
         <PokemonHeader name={pokemon?.name ?? ''} id={pokemon?.id ?? 0} />
-        <div className="grid grid-cols-2 gap-8 p-8">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 p-4 sm:p-6 md:p-8">
+          {/* Left Column — Avatar, Types, Info Cards */}
           <div className="flex flex-col items-center gap-4">
             <PokemonAvatar
               sprite={pokemon?.sprites.front_default ?? ''}
               name={pokemon?.name ?? ''}
             />
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap justify-center">
               {pokemon?.types.map((t) => (
                 <TypeBadge key={t.type.name} type={t.type.name} />
               ))}
