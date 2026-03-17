@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { PokemonCard } from '@/modules/pokemons-list/components/molecules';
 import { Spinner } from '@/modules/shared/components/atoms';
 import { fetchInfinitePokemonList } from '@/services/api/pokemon.api';
+import { PokemonsListWrapper } from '@/modules/pokemons-list/components/organisms';
 
 interface IPokemon {
   url: string;
@@ -27,11 +27,13 @@ const InfiniteView = () => {
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
   });
-
   const allPokemons: IPokemon[] = data?.pages.flatMap((p) => p.data) ?? [];
-
+  const pokemons = {
+    data: allPokemons,
+    totalCount: data?.pages[0]?.totalCount as number,
+  };
   const totalCount = data?.pages[0]?.totalCount ?? 0;
-
+  const allPokemonsLoaded = !hasNextPage && allPokemons.length > 0;
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -54,22 +56,17 @@ const InfiniteView = () => {
 
   return (
     <article className="space-y-6">
-      <div className="grid grid-cols-4 gap-4">
-        {allPokemons.map((pokemon) => (
-          <PokemonCard pokemon={pokemon} />
-        ))}
-      </div>
-
+      <PokemonsListWrapper allPokemons={pokemons} />
       {isFetchingNextPage && (
         <div className="w-full flex flex-col items-center gap-2 py-8">
           <Spinner size="md" />
-          <p className="text-sm text-gray-400">Loading more Pokémon...</p>
+          <p className="text-sm text-gray-400">Loading more Pokémons...</p>
         </div>
       )}
 
       <div ref={loaderRef} className="w-full h-4" />
 
-      {!hasNextPage && allPokemons.length > 0 && (
+      {allPokemonsLoaded && (
         <div className="text-center py-6 space-y-1">
           <p className="text-2xl">🎉</p>
           <p className="text-gray-500 font-medium">You've caught them all!</p>

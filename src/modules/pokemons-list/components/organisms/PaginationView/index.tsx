@@ -1,7 +1,7 @@
 import {
   Pagination,
-  PokemonCard,
 } from '@/modules/pokemons-list/components/molecules';
+import { PokemonsListWrapper } from '@/modules/pokemons-list/components/organisms';
 
 export interface IPokemonCard {
   name: string;
@@ -27,11 +27,8 @@ const PaginationView = ({
 }: PaginationViewProps) => {
   return (
     <article>
-      <div className="grid grid-cols-4 gap-4">
-        {pokemonsData?.data.map((pokemon) => {
-          return <PokemonCard pokemon={pokemon} />;
-        })}
-      </div>
+      <PokemonsListWrapper allPokemons={pokemonsData} />
+
       <Pagination
         page={page}
         totalPages={totalPages}
